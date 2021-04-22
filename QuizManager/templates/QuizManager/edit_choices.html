@@ -1,0 +1,19 @@
+{% extends 'QuizManager/base.html' %}
+{% block title %}Add Question{% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="row">
+    <div class="col-sm-6 mx-auto">
+        <h3>Question text: {{question.question_text}}</h3>
+        <form action="{% url 'QuizManager:edit_choices' id %}" method="POST">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+                {{form|crispy}}
+            {% endfor %}
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'QuizManager/base.html' %}
+{% block title %}View Quiz{% endblock %}
+{% block content %}
+<div class='row'>
+    <div class='col-6 mx-auto'>
+        <div class='list-group'>
+            {% for question in questions %}
+            <a href="{% url 'QuizManager:view_question' question.id %}" class="list-group-item list-group-item-action">{{question.question_text}}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
