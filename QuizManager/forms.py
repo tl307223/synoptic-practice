@@ -25,4 +25,4 @@ class QuizModelForm(ModelForm):
         model = Quiz
         fields = '__all__'
 
-QuestionChoiceFormset = inlineformset_factory(Question, Choice, fields=('choice_text', 'correct'), max_num=4)
+QuestionChoiceFormset = inlineformset_factory(Question, Choice, fields=('choice_text', 'correct'), max_num=4, extra=4)
