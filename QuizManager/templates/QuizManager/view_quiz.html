@@ -5,8 +5,11 @@
     <div class='col-6 mx-auto'>
         <div class='list-group'>
             {% for question in questions %}
-            <a href="{% url 'QuizManager:view_question' question.id %}" class="list-group-item list-group-item-action">{{question.question_text}}</a>
+            <a href="{% url 'QuizManager:view_question' question.id %}" class="list-group-item list-group-item-action text-center">{{question.question_text}}</a>
             {% endfor %}
+            {% if perms.QuizManager.change_quiz %}
+            <a href="{% url 'QuizManager:edit_quiz' id=quiz.id %}" class="btn btn-primary btn-lg btn-block" role="button" aria-disabled="true">Edit Quiz</a>
+            {% endif %}    
         </div>
     </div>
 </div>

@@ -21,6 +21,14 @@ def index(request):
     }
     return render(request, 'QuizManager/index.html', context)
 
+def view_quizzes(request):
+    quizzes = Quiz.objects.all()
+    context = {
+        'quizzes' : quizzes
+    }
+    return render(request, 'QuizManager/view_quizzes.html', context)
+
+
 def edit_question(request, id):
     question = get_object_or_404(Question, pk=id)
     form = QuestionModelForm(request.POST or None,instance=question)
@@ -87,9 +95,19 @@ def view_quiz(request, id):
     quiz = Quiz.objects.get(id=id)
     questions = quiz.questions.all()
     context = {
+        'quiz' : quiz,
         'questions' : questions
     }
     return render(request, 'QuizManager/view_quiz.html', context)
+
+def edit_quiz(request, id):
+    quiz = Quiz.objects.get(id=id)
+    context = {
+        'quiz' : quiz,
+        'questions' : questions
+    }
+    return render(request, 'QuizManager/edit_quiz.html', context)
+
 
 def login(request):
     if request.method == 'POST':
