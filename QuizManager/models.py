@@ -1,7 +1,13 @@
 from django.db import models
 
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    pass
+
 class Quiz(models.Model):
     quiz_name = models.CharField(max_length=30)
+    assigned_users = models.ManyToManyField(User)
     def __str__(self):
         return self.quiz_name
 
