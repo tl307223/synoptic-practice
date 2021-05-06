@@ -48,12 +48,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'QuizManager:index' %}">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'QuizManager:add_quiz' %}">Add Quiz<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'QuizManager:add_question' %}">Add Question <span class="sr-only">(current)</span></a>
-                </li>
                 </ul>
                 {% if user.is_authenticated %}
                 <ul class="navbar-nav">

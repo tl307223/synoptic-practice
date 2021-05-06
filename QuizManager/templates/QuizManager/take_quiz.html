@@ -1,0 +1,17 @@
+{% extends 'QuizManager/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Take Quiz{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-6 mx-auto">
+        <h1 class="text-center">{{quiz}}</h1>
+        <form action="" method="post" class="m-3">
+            {% csrf_token %}
+            {% for form in forms %}
+                {{form|crispy}}
+            {% endfor %}
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit Answers</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

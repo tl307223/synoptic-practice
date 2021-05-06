@@ -8,6 +8,8 @@
             <a href="{% url 'QuizManager:view_quiz' quiz.id %}" class="list-group-item list-group-item-action text-center">{{quiz.quiz_name}}</a>
             {% endfor %}
         </div>
+        <br>
+        <a href="{% url 'QuizManager:add_quiz' %}" class="btn btn-primary btn-lg btn-block">Add Quiz</a>
     </div>
 </div>
 {% endblock %}
