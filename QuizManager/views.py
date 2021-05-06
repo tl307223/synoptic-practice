@@ -12,6 +12,7 @@ from .models import Choice, Question, Quiz, Result
 
 from .forms import QuizModelForm, UserLoginForm, QuestionChoiceFormset, QuestionModelForm, AnswerQuestionForm
 
+
 def index(request):
     if not request.user.is_authenticated:
         return redirect('QuizManager:login')
@@ -117,7 +118,6 @@ def edit_quiz(request, id):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            print(quiz.id)
             return redirect('QuizManager:view_quiz', id=quiz.id)
     context = {
         'quiz' : quiz,
@@ -136,12 +136,12 @@ def take_quiz(request, id):
         choices = request.POST.getlist('choices')
         score = 0
         for choice in choices:
-            print(choice)
             choice_object = Choice.objects.get(pk=int(choice))
             if choice_object.correct:
                 score += 1
         result_obj = Result(quiz=quiz, user=request.user, score=score)
         result_obj.save()
+        request.user.assigned_quizzes.remove(quiz)
         return redirect('QuizManager:view_assigned_quizzes')
     questions = quiz.questions.all()
     forms = [AnswerQuestionForm(question) for question in questions]
