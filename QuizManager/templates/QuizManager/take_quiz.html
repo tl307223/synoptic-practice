@@ -15,3 +15,21 @@
     </div>
 </div>
 {% endblock %}
+{% block footer_javascript_page %}
+<script>
+    $(".selectmultiple").each(function () {
+        var options = $(this).children('option');
+        $(options).each(function () {
+            var initial_index = Math.floor(options.length * (Math.random() % 1));
+            var swapped_index = Math.floor(options.length * (Math.random() % 1));
+            var initial_text = options[initial_index]['text']
+            var initial_value = options[initial_index]['value']
+            options[initial_index]['text'] = options[swapped_index]['text']
+            options[initial_index]['value'] = options[swapped_index]['value']
+            options[swapped_index]['text'] = initial_text
+            options[swapped_index]['value'] = initial_value
+        })
+    });
+
+</script>
+{% endblock footer_javascript_page %}
