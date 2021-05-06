@@ -8,9 +8,9 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate as auth_authenticate
 from django.contrib.auth import logout as auth_logout
 
-from .models import Choice, Question, Quiz
+from .models import Choice, Question, Quiz, Result
 
-from .forms import QuizModelForm, UserLoginForm, QuestionChoiceFormset, QuestionModelForm
+from .forms import QuizModelForm, UserLoginForm, QuestionChoiceFormset, QuestionModelForm, AnswerQuestionForm
 
 def index(request):
     if not request.user.is_authenticated:
@@ -45,8 +45,10 @@ def edit_question(request, id):
 
 def view_question(request, id):
     question = get_object_or_404(Question, pk=id)
+    quiz_id = question.quiz.id
     context = {
-        'question' : question
+        'question' : question,
+        'quiz_id' : quiz_id
     }
     return render(request, 'QuizManager/view_question.html', context)
 
@@ -65,12 +67,15 @@ def edit_choices(request, id):
     }
     return render(request, 'QuizManager/edit_choices.html', context)
 
-def add_question(request):
+def add_question(request, quiz=None):
     if request.method == 'POST':
         form = QuestionModelForm(request.POST)
         if form.is_valid():
             question = form.save()
             return redirect('QuizManager:view_question', id=question.id)
+    elif quiz:
+        initial_quiz = Quiz.objects.get(id=quiz)
+        form = QuestionModelForm(initial={'quiz' : quiz })
     else:
         form = QuestionModelForm()
     context = {
@@ -78,12 +83,18 @@ def add_question(request):
     }
     return render(request, 'QuizManager/add_question.html', context)
 
+def delete_question(request, id):
+    question = Question.objects.get(id=id)
+    quiz = question.quiz.id
+    question.delete()
+    return redirect('QuizManager:view_quiz', id=quiz)
+
 def add_quiz(request):
     if request.method == 'POST':
         form = QuizModelForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('QuizManager:index')
+            return redirect('QuizManager:view_quizzes')
     else:
         form = QuizModelForm
     context = {
@@ -102,12 +113,52 @@ def view_quiz(request, id):
 
 def edit_quiz(request, id):
     quiz = Quiz.objects.get(id=id)
+    form = QuizModelForm(request.POST or None,instance=quiz)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            print(quiz.id)
+            return redirect('QuizManager:view_quiz', id=quiz.id)
     context = {
         'quiz' : quiz,
-        'questions' : questions
+        'form' : form,
     }
     return render(request, 'QuizManager/edit_quiz.html', context)
 
+def delete_quiz(request, id):
+    quiz = Quiz.objects.get(id=id)
+    quiz.delete()
+    return redirect('QuizManager:view_quizzes')
+
+def take_quiz(request, id):
+    quiz = Quiz.objects.get(id=id)
+    if request.method == 'POST':
+        choices = request.POST.getlist('choices')
+        score = 0
+        for choice in choices:
+            print(choice)
+            choice_object = Choice.objects.get(pk=int(choice))
+            if choice_object.correct:
+                score += 1
+        result_obj = Result(quiz=quiz, user=request.user, score=score)
+        result_obj.save()
+        return redirect('QuizManager:view_assigned_quizzes')
+    questions = quiz.questions.all()
+    forms = [AnswerQuestionForm(question) for question in questions]
+    context = {
+        'quiz' : quiz,
+        'questions' : questions,
+        'forms' : forms
+    }
+    return render(request, 'QuizManager/take_quiz.html', context)
+
+
+def view_assigned_quizzes(request):
+    assigned_quizzes = request.user.assigned_quizzes.all()
+    context = {
+        'assigned_quizzes' : assigned_quizzes
+    }
+    return render(request, 'QuizManager/view_assigned_quizzes.html', context)
 
 def login(request):
     if request.method == 'POST':
