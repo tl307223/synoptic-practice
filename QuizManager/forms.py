@@ -1,10 +1,9 @@
 from django import forms
-from django.db.models import fields
+
 from django.forms import ModelForm
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms.models import modelform_factory, inlineformset_factory
-from django.forms.widgets import CheckboxInput
 
 from .models import Question, Quiz, Choice
 
@@ -24,5 +23,13 @@ class QuizModelForm(ModelForm):
     class Meta:
         model = Quiz
         fields = '__all__'
+
+class AnswerQuestionForm(forms.Form):
+    choices = forms.ModelMultipleChoiceField(queryset=None, label=None)
+
+    def __init__(self, question, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['choices'].queryset = question.choices.all()
+        self.fields['choices'].label = question.question_text
 
 QuestionChoiceFormset = inlineformset_factory(Question, Choice, fields=('choice_text', 'correct'), max_num=4, extra=4)
