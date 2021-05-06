@@ -1,13 +1,11 @@
 from django.db import models
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
 
-class User(AbstractUser):
-    pass
 
 class Quiz(models.Model):
     quiz_name = models.CharField(max_length=30)
-    assigned_users = models.ManyToManyField(User)
+    assigned_users = models.ManyToManyField(get_user_model(), blank=True, related_name="assigned_quizzes")
     def __str__(self):
         return self.quiz_name
 
@@ -31,3 +29,18 @@ class Choice(models.Model):
     correct = models.BooleanField()
     def __str__(self):
         return self.choice_text
+
+class Result(models.Model):
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE
+    )
+    score = models.IntegerField()
+
+    def __str__(self):
+        return str(self.score)
+    
