@@ -1,5 +1,9 @@
 {% extends 'QuizManager/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+{% block head_css_page %} 
+<link href="{% static 'QuizManager/css/take_quiz.css' %}" rel="stylesheet" media="screen">
+{% endblock %}
 {% block title %}Take Quiz{% endblock %}
 {% block content %}
 <div class="row">
