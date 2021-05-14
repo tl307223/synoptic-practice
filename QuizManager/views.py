@@ -54,7 +54,7 @@ def view_question(request, id):
     return render(request, 'QuizManager/view_question.html', context)
 
 def edit_choices(request, id):
-    question = Question.objects.get(id=id)
+    question = get_object_or_404(Question, pk=id)
     formset = QuestionChoiceFormset(instance=question)
     if request.method == 'POST':
         formset = QuestionChoiceFormset(request.POST, instance=question)
@@ -75,7 +75,7 @@ def add_question(request, quiz=None):
             question = form.save()
             return redirect('QuizManager:view_question', id=question.id)
     elif quiz:
-        initial_quiz = Quiz.objects.get(id=quiz)
+        initial_quiz = get_object_or_404(Quiz, pk=quiz)
         form = QuestionModelForm(initial={'quiz' : quiz })
     else:
         form = QuestionModelForm()
@@ -85,7 +85,7 @@ def add_question(request, quiz=None):
     return render(request, 'QuizManager/add_question.html', context)
 
 def delete_question(request, id):
-    question = Question.objects.get(id=id)
+    question = get_object_or_404(Question, pk=id)
     quiz = question.quiz.id
     question.delete()
     return redirect('QuizManager:view_quiz', id=quiz)
@@ -104,7 +104,7 @@ def add_quiz(request):
     return render(request, 'QuizManager/add_quiz.html', context)
 
 def view_quiz(request, id):
-    quiz = Quiz.objects.get(id=id)
+    quiz = get_object_or_404(Quiz, pk=id)
     questions = quiz.questions.all()
     context = {
         'quiz' : quiz,
@@ -113,7 +113,7 @@ def view_quiz(request, id):
     return render(request, 'QuizManager/view_quiz.html', context)
 
 def edit_quiz(request, id):
-    quiz = Quiz.objects.get(id=id)
+    quiz = get_object_or_404(Quiz, pk=id)
     form = QuizModelForm(request.POST or None,instance=quiz)
     if request.method == 'POST':
         if form.is_valid():
@@ -126,12 +126,12 @@ def edit_quiz(request, id):
     return render(request, 'QuizManager/edit_quiz.html', context)
 
 def delete_quiz(request, id):
-    quiz = Quiz.objects.get(id=id)
+    quiz = get_object_or_404(Quiz, pk=id)
     quiz.delete()
     return redirect('QuizManager:view_quizzes')
 
 def take_quiz(request, id):
-    quiz = Quiz.objects.get(id=id)
+    quiz = get_object_or_404(Quiz, pk=id)
     if request.method == 'POST':
         choices = request.POST.getlist('choices')
         score = 0
@@ -153,7 +153,7 @@ def take_quiz(request, id):
     return render(request, 'QuizManager/take_quiz.html', context)
 
 def quiz_results(request, id):
-    result = Result.objects.get(id=id)
+    result = get_object_or_404(Result, pk=id)
     max_score = result.quiz.questions.count()
     context = {
         'max_score' : max_score,
