@@ -3,8 +3,9 @@
 {% block content %}
 <div class='row'>
     <div class='col-6 mx-auto'>
+        {% if perms.QuizManager.view_quiz %}
         <a href="{% url 'QuizManager:view_quizzes' %}" class="btn btn-primary btn-lg  btn-block p-5">Teacher Portal</a>
-        <br>
+        {% endif %}
         <a href="{% url 'QuizManager:view_assigned_quizzes' %}" class="btn btn-primary btn-lg  btn-block p-5">Student Portal</a>
     </div>
 </div>

@@ -142,7 +142,7 @@ def take_quiz(request, id):
         result_obj = Result(quiz=quiz, user=request.user, score=score)
         result_obj.save()
         request.user.assigned_quizzes.remove(quiz)
-        return redirect('QuizManager:view_assigned_quizzes')
+        return redirect('QuizManager:quiz_results', id=result_obj.pk)
     questions = quiz.questions.all()
     forms = [AnswerQuestionForm(question) for question in questions]
     context = {
@@ -151,6 +151,15 @@ def take_quiz(request, id):
         'forms' : forms
     }
     return render(request, 'QuizManager/take_quiz.html', context)
+
+def quiz_results(request, id):
+    result = Result.objects.get(id=id)
+    max_score = result.quiz.questions.count()
+    context = {
+        'max_score' : max_score,
+        'result' : result
+    }
+    return render(request, 'QuizManager/quiz_results.html', context)
 
 
 def view_assigned_quizzes(request):
