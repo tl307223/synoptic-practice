@@ -1,0 +1,13 @@
+{% extends 'QuizManager/base.html' %}
+{% block title %}Quiz Results{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-4 mx-auto">
+        <ul class="list-group">
+            <li class="list-group-item text-center">{{result.quiz}}</li>
+            <li class="list-group-item text-center">{{result.score}} / {{max_score}}</li>
+            <a href="{% url 'QuizManager:view_assigned_quizzes' %}" class="btn btn-primary btn-lg  btn-block">Back to assigned quizzes</a>
+        </ul>
+    </div>
+</div>
+{% endblock %}
